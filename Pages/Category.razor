@@ -1,0 +1,22 @@
+﻿@page "/category"
+
+<h3>Category</h3>
+
+<div> <h3>Choose Image File</h3> </div>
+@if (!string.IsNullOrEmpty(base64String))
+{
+    <img src="data:image/png;base64,@base64String" width="200" height="200" />
+}
+<div>
+    <InputFile accept=".jpeg,.jpg,.png" OnChange="@SelectImage" />
+</div>
+@code {
+    private string base64String;
+    async Task SelectImage(InputFileChangeEventArgs e)
+    {
+        var imageFile = e.File;
+        var buffer = new byte[imageFile.Size];
+        await imageFile.OpenReadStream().ReadAsync(buffer);
+        base64String = Convert.ToBase64String(buffer);
+    }
+}

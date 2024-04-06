@@ -1,0 +1,81 @@
+@page "/departments"
+@inject NavigationManager NavManager
+
+<h3>Department_List</h3>
+@if (departments == null)
+{
+    <p>Loading...</p>
+}
+else
+{
+
+    <div class="container">
+        <div class="row">
+
+            <div class="col-md-6">
+                <a href="/department/create" class="btn btn-primary my-3">New Department Create</a>
+                <div class="card">
+
+                    <table class="table">
+                        <thead class="thead-light">
+                            <tr>
+                                <th>#</th>
+                                <th>Name</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+
+                            @foreach (var depart in departments)
+                            {
+                                <tr>
+                                    <td>@(departments.IndexOf(depart) + 1)</td>
+                                    <td class="">@depart.description</td>
+                                    @* <td>@product.Description</td> *@
+                                    <td>
+                                        <button class="btn btn-primary" @onclick="() => EditDepartment(depart)">Edit</button>
+                                        <button class="btn btn-danger" @onclick="() => DeleteDepartment(depart)">Delete</button>
+
+                                    </td>
+                                </tr>
+                            }
+
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+@inject Crud.Services.DepartmentService departmentService
+@code {
+    @inject NavigationManager Navigation
+    private List<Crud.Models.Department> departments;
+
+    protected override async Task OnInitializedAsync() => departments = await departmentService.GetDepartmentsAsync();
+
+
+    private async Task DeleteDepartment(Crud.Models.Department department)
+    {
+        var result = await departmentService.DeleteDepartmentAsync(department);
+        if (result != null)
+        {
+            // Remove the deleted department from the list
+            departments.Remove(department);
+            StateHasChanged();
+            NavManager.NavigateTo("/departments");
+        }
+        else
+        {
+            // Handle deletion failure
+            Console.WriteLine("Failed to delete department.");
+        }
+    }
+
+    private void EditDepartment(Crud.Models.Department department)
+    {
+        Console.WriteLine("Done");
+        Navigation.NavigateTo($"/department/{department.oid}");
+    }
+
+}

@@ -1,0 +1,60 @@
+﻿@inject HttpClient HttpClient
+@page "/department/{id:int}"
+<h3>Edit Department</h3>
+<div class="container">
+    <div class="row">
+        <div class="col-md-6">
+            <form @onsubmit="EditDepartment">
+                <div class="form-group mb-3">
+                    <label for="description">Description:</label>
+                    <input id="description" class="form-control" type="text" @bind="description"
+                        @bind:event="oninput" />
+                </div>
+                <button type="submit" class="btn btn-primary">Edit</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+@code {
+    [Parameter]
+    public int Id { get; set; }
+
+    string description = string.Empty;
+    DepartmentService departmentService;
+
+    @* protected override void OnInitialized()
+{
+departmentService = new DepartmentService(HttpClient);
+
+var departmentS = await departmentService.GetDepartmentByIdAsync(Id);
+
+} *@
+
+    protected override async Task OnInitializedAsync()
+    {
+        departmentService = new DepartmentService(HttpClient);
+        @* var department = await departmentService.GetDepartmentByIdAsync(Id);
+Console.WriteLine(department);
+Console.WriteLine("Hello");
+if (department != null)
+{
+description = department.description;
+} *@
+    }
+
+
+    async Task EditDepartment()
+    {
+        Department departmentToEdit = new Department { oid = Id, description = description };
+        var editedDepartment = await departmentService.EditDepartmentAsync(departmentToEdit);
+        if (editedDepartment != null)
+        {
+            Console.WriteLine("Edit Successfully");
+        }
+        else
+        {
+            Console.WriteLine("Department Edit Failed");
+        }
+    }
+}

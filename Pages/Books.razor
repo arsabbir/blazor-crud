@@ -1,0 +1,30 @@
+<h3>Books List</h3>
+
+@if (BookList != null)
+{
+    @foreach (var book in BookList)
+    {
+        <div>
+            <ul>
+                <li>@book.Id</li>
+                <li> @book.Title</li>
+                <li> @book.Author</li>
+                @if (isShow)
+                {
+                    <button class="btn btn-primary" @onclick="@(()=>DeleteBook.InvokeAsync(book))">Delete</button>
+                }
+            </ul>
+        </div>
+    }
+
+}
+else
+{
+    <img src="https://cdn.pixabay.com/animation/2023/10/08/03/19/03-19-26-213_512.gif" />
+}
+
+@code {
+    [Parameter] public List<Book> BookList { get; set; }
+    [Parameter] public bool isShow { get; set; } = false;
+    [Parameter] public EventCallback<Book> DeleteBook { get; set; }
+}

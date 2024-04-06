@@ -1,0 +1,42 @@
+﻿@page "/department/create"
+@using Crud.Models
+@using Crud.Services
+@inject DepartmentService DepartmentService
+@inject NavigationManager NavigationManager
+
+<h3>Create Department</h3>
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-6">
+            <EditForm Model="@department" OnValidSubmit="CreateDepartment" FormName="departmentForm">
+                <DataAnnotationsValidator />
+                <div class="form-group mb-3">
+                    <label for="description">Description:</label>
+                    <InputText id="description" class="form-control" @bind-Value="department.description" />
+                    <ValidationMessage For="@(() => department.description)" />
+                </div>
+                <button type="submit" class="btn btn-primary">Create</button>
+            </EditForm>
+        </div>
+    </div>
+</div>
+
+@code {
+    private Department department = new Department();
+
+    private async Task CreateDepartment()
+    {
+        Console.WriteLine("Description value before submission: " + department.description);
+        var createdDepartment = await DepartmentService.CreateDepartmentAsync(department);
+        if (createdDepartment != null)
+        {
+            Console.WriteLine("Department created successfully");
+            NavigationManager.NavigateTo("/departments"); // Redirect to departments page after successful creation
+        }
+        else
+        {
+            Console.WriteLine("Failed to create department");
+        }
+    }
+}

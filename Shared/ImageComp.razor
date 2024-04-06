@@ -1,0 +1,23 @@
+﻿
+
+<div> <h3>Choose Image File</h3> </div>
+@if (base64String != null)
+{
+    <img src="data:image/png;base64,base64String" width="200" height="200"/>
+}
+<div>
+    <InputFile accept=".jpeg,.jpg,.png"  onchange="SelectImage"/>
+</div>
+@code {
+    private string base64String;
+    async Task SelectImage(InputFileChangeEventArgs e)
+    {
+        var multipleFiles = e.GetMultipleFiles();
+        foreach (var ImageFile in multipleFiles)
+        {
+            var byteArray = new byte[ImageFile.Size];
+            await ImageFile.OpenReadStream().ReadAsync(byteArray);
+            base64String = Convert.ToBase64String(byteArray);
+        }
+    }
+}
